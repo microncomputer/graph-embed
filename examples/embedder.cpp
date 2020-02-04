@@ -140,6 +140,7 @@ void printMatrix(SparseMatrix& A) {
 int main (int argc, char* argv[]) {
   std::vector<std::string> inputpaths = {
     // your graphs here
+      std::string("/home/austen/Documents/school/research/recipe_analysis/coolist.coo")
   };
 
   for (int x=0; x<inputpaths.size(); x++) {
@@ -149,7 +150,7 @@ int main (int argc, char* argv[]) {
     SparseMatrix A;
 
     {
-      A = linalgcpp::ReadAdjList(inputpath, true);
+      A = linalgcpp::ReadCooList(inputpath, true);
       bool connected = true;
       if (connected) {
 	std::cout << "before: " << A.Rows() << std::endl;
@@ -223,7 +224,7 @@ int main (int argc, char* argv[]) {
 
     for (int i=0; i<coords.size(); i++) {
       for (int k=0; k<dimension; k++) {
-	assert(!isnan(coords[i][k]));
+	assert(!std::isnan(coords[i][k]));
       }
     }
 
@@ -288,7 +289,7 @@ int main (int argc, char* argv[]) {
     }
     matfile.close();
   
-    std::string call = "python scripts/plot-graph.py -graph " + matpath + " -part " + partpath + " -coords " + coordspath + " -o " + plotpath;
+    std::string call = "/home/austen/Documents/school/research/pyvenv/bin/python /home/austen/Documents/school/research/graph-embed/scripts/plot-graph.py -graph " + matpath + " -part " + partpath + " -coords " + coordspath + " -o " + plotpath;
     std::cout << call << std::endl;
     system(call.c_str());
   }

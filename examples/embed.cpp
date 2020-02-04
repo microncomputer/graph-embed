@@ -93,6 +93,7 @@ int main (int argc, char* argv[]) {
   double coarseningFactor = 0.1;
   std::vector<SparseMatrix> hierarchy = partition::partition(A, coarseningFactor);
   std::vector<SparseMatrix> As = {A};
+  int k = hierarchy.size();
   for (int level=0; level<k; level++) {
     As.push_back(hierarchy[level].Mult(As[level]).Mult(hierarchy[level].Transpose()));
   }

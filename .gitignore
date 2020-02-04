@@ -1,0 +1,8 @@
+*.o
+*.swp
+*.bak
+build
+obj
+Makefile
+*.a
+*.so

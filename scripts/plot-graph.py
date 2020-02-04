@@ -18,7 +18,7 @@ import numpy
 #======
 
 import plotly
-import plotly.plotly as py
+#import plotly.plotly as py
 import plotly.graph_objs as go
 
 #======
@@ -40,7 +40,7 @@ args = parser.parse_args()
 
 graphpath = args.graphpath
 partpath = args.partpath
-ballpath = args.ballpath
+#ballpath = args.ballpath
 coordspath = args.coordspath
 
 #ballfile = open(ballpath)
@@ -70,10 +70,10 @@ edges = [(int(line.split(" ")[0]), int(line.split(" ")[1])) for line in graphfil
 #======
 
 def initialColors(N):
-    #return random.rand(N,3)
+    return random.rand(N,3)
     #colors_list = [[0,128,128],[128,0,0], [154,99,36], [75,75,0], [0,0,117], [0,0,0], [230,25,75], [245,130,49], [255,225,25], [188,246,12], [60,180,75], [70,240,240], [67,99,216], [145,30,180], [240,50,230], [128,128,128], [250,190,190], [255,216,177], [255,250,200], [170,255,195], [230,190,255], [255,255,255]]
     #colors_list = [[0,128,128],[128,0,0], [154,99,36], [75,75,0], [0,0,117], [0,0,0], [230,25,75], [245,130,49], [255,225,25], [188,246,12], [60,180,75], [70,240,240], [67,99,216], [145,30,180], [240,50,230], [128,128,128], [250,190,190], [255,216,177], [255,250,200], [170,255,195], [230,190,255]]
-    colors_list = [[128, 128, 128]]
+    #colors_list = [[128, 128, 128]]
     for i in range(len(colors_list)):
         colors_list[i] = [colors_list[i][0] / 256.0, colors_list[i][1] / 256.0, colors_list[i][2] / 256.0]
     colors = []
@@ -205,7 +205,7 @@ if DO_EDGES:
         Ze += [coords[i][2] - eps, coords[j][2] - eps, None]
     linecolor = 'rgb(75,75,75)'
     #linewidth = 4.5 #2*math.sqrt(math.sqrt(1000/E))
-    lineopacity = 1.0 #1.0 #math.sqrt(200/E)
+    lineopacity = 0.01 #1.0 #math.sqrt(200/E)
     plot_datas.append(go.Scatter3d(x=Xe, 
                                    y=Ye, 
                                    z=Ze,
@@ -269,7 +269,7 @@ plot_datas = list(plot_datas)
 #plot_datas.append(borderlines)
 #plot_datas.append(xyz)
 
-DO_ANISOTROPY = False
+DO_ANISOTROPY = True
 if DO_ANISOTROPY:
     pi = 3.14159
     theta = pi / 3
