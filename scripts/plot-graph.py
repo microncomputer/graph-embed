@@ -189,7 +189,7 @@ if DO_VERTICES:
     
     
 # add edges
-DO_EDGES = True
+DO_EDGES = False
 if DO_EDGES:
     Xe = []
     Ye = []

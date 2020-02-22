@@ -140,7 +140,7 @@ void printMatrix(SparseMatrix& A) {
 int main (int argc, char* argv[]) {
   std::vector<std::string> inputpaths = {
     // your graphs here
-      std::string("/home/austen/Documents/school/research/recipe_analysis/coolist.coo")
+      std::string("/home/austen/Documents/school/research/recipe_analysis/cocktail.coo")
   };
 
   for (int x=0; x<inputpaths.size(); x++) {
@@ -151,7 +151,7 @@ int main (int argc, char* argv[]) {
 
     {
       A = linalgcpp::ReadCooList(inputpath, true);
-      bool connected = true;
+      bool connected = false;
       if (connected) {
 	std::cout << "before: " << A.Rows() << std::endl;
 	A = largestComponent(A);
@@ -237,29 +237,29 @@ int main (int argc, char* argv[]) {
     std::ofstream partfile;
     partfile.open(partpath);
     if (k == 0) {
-      std::vector<std::vector<int>> level (n);
-      for (int i=0; i<n; i++) {
-	level[i].push_back(i);
-      }
-      k = 1;
-      hierarchy = {partition::interpolationMatrix(n, level)};
+       std::vector<std::vector<int>> level (n);
+       for (int i=0; i<n; i++) {
+          level[i].push_back(i);
+       }
+       k = 1;
+       hierarchy = {partition::interpolationMatrix(n, level)};
     }
     partfile << n << " " << k << "\n";
     for (int i=0; i<k; i++) {
-      partfile << hierarchy[i].Rows() << " ";
+       partfile << hierarchy[i].Rows() << " ";
     }
     partfile << "\n";
     for (int level=0; level<k; level++) {
-      SparseMatrix& P = hierarchy[level];
-      auto& I = P.GetIndptr();
-      auto& J = P.GetIndices();
-      for (int i=0; i<P.Rows(); i++) {
-	for (int k=I[i]; k<I[i+1]; k++) {
-	  int j = J[k];
-	  partfile << j << " ";
-	}
-	partfile << "\n";
-      }
+       SparseMatrix& P = hierarchy[level];
+       auto& I = P.GetIndptr();
+       auto& J = P.GetIndices();
+       for (int i=0; i<P.Rows(); i++) {
+          for (int k=I[i]; k<I[i+1]; k++) {
+             int j = J[k];
+             partfile << j << " ";
+          }
+          partfile << "\n";
+       }
     }
     partfile.close();
 
@@ -267,12 +267,12 @@ int main (int argc, char* argv[]) {
     std::ofstream coordsfile;
     coordsfile.open(coordspath);
     for (int i=0; i<n; i++) {
-      if (dimension == 2) {
-	coordsfile << coords[i][0] << " " << coords[i][1] << " " << 0.0 << "\n";
-      }
-      if (dimension == 3) {
-	coordsfile << coords[i][0] << " " << coords[i][1] << " " << coords[i][2] << "\n";
-      }
+       if (dimension == 2) {
+          coordsfile << coords[i][0] << " " << coords[i][1] << " " << 0.0 << "\n";
+       }
+       if (dimension == 3) {
+          coordsfile << coords[i][0] << " " << coords[i][1] << " " << coords[i][2] << "\n";
+       }
     }
     coordsfile.close();
 
@@ -282,8 +282,8 @@ int main (int argc, char* argv[]) {
     std::vector<int>& I = A.GetIndptr();
     std::vector<int>& J = A.GetIndices();
     for (int i=0; i<A.Rows(); i++) {
-      for (int k=I[i]; k<I[i+1]; k++) {
-	int j = J[k];
+       for (int k=I[i]; k<I[i+1]; k++) {
+          int j = J[k];
 	matfile << i << " " << j << "\n";
       }
     }
