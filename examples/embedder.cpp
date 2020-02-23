@@ -138,13 +138,8 @@ void printMatrix(SparseMatrix& A) {
 }
 
 int main (int argc, char* argv[]) {
-  std::vector<std::string> inputpaths = {
-    // your graphs here
-      std::string("/home/austen/Documents/school/research/recipe_analysis/cocktail.coo")
-  };
 
-  for (int x=0; x<inputpaths.size(); x++) {
-    std::string inputpath = inputpaths[x];
+    std::string inputpath = std::string(argv[1]);
     std::cout << "doing: " << inputpath << std::endl;
 
     SparseMatrix A;
@@ -289,10 +284,11 @@ int main (int argc, char* argv[]) {
     }
     matfile.close();
   
+    /*
     std::string call = "/home/austen/Documents/school/research/pyvenv/bin/python /home/austen/Documents/school/research/graph-embed/scripts/plot-graph.py -graph " + matpath + " -part " + partpath + " -coords " + coordspath + " -o " + plotpath;
     std::cout << call << std::endl;
     system(call.c_str());
-  }
+    */
 }
 
 

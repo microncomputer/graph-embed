@@ -42,6 +42,7 @@ graphpath = args.graphpath
 partpath = args.partpath
 #ballpath = args.ballpath
 coordspath = args.coordspath
+outputpath = args.outputpath
 
 #ballfile = open(ballpath)
 #balls = [[float(i) for i in line.split(" ")] for line in ballfile.readlines()]
@@ -297,4 +298,4 @@ if DO_ANISOTROPY:
 print('plotting')
 
 fig = go.Figure(data=plot_datas, layout=layout)
-plotly.offline.plot(fig)
+plotly.offline.plot(fig, filename=outputpath)
