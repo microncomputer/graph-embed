@@ -35,6 +35,7 @@ parser.add_argument("-part", "--part", dest="partpath", help="input part FILE", 
 #parser.add_argument("-ball", "--ball", dest="ballpath", help="input ball FILE", metavar="FILE")
 parser.add_argument("-coords", "--coordinates", dest="coordspath", help="input coords FILE", metavar="FILE")
 parser.add_argument("-o", "--output", dest="outputpath", help="output FILE", metavar="FILE")
+parser.add_argument("-ingredients", dest="ingpath", help="ingredients FILE", metavar="FILE")
 
 args = parser.parse_args()
 
@@ -43,6 +44,10 @@ partpath = args.partpath
 #ballpath = args.ballpath
 coordspath = args.coordspath
 outputpath = args.outputpath
+ingpath = args.ingpath
+
+ingfile = open(ingpath)
+ingredients = [ing for ing in ingfile.readlines()]
 
 #ballfile = open(ballpath)
 #balls = [[float(i) for i in line.split(" ")] for line in ballfile.readlines()]
@@ -186,7 +191,8 @@ if DO_VERTICES:
                                    ),
                                    #group=[i for i in range(n)],
                                    #opacity = [0.1 for i in range(n)],
-                                   hoverinfo='none'))
+                                   text=ingredients,
+                                   hoverinfo="text"))
     
     
 # add edges
