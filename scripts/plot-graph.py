@@ -13,13 +13,14 @@
 #               https://plot.ly/python/custom-buttons/
 
 from numpy import *
-import numpy
+import numpy as np
 
 #======
 
 import plotly
 #import plotly.plotly as py
 import plotly.graph_objs as go
+import sys
 
 #======
 
@@ -63,12 +64,22 @@ n, K = partfile.readline().split(" ")
 n = int(n)
 K = int(K)
 partition_sizes = [int(i) for i in partfile.readline().strip().split(" ")]
+
 partitions = []
 for i in range(K):
     partition = []
     for j in range(partition_sizes[i]):
         partition.append([int(i) for i in partfile.readline().strip().split(" ")])
     partitions.append(partition)
+
+interpolation = [np.zeros((n, partition_sizes[0]), dtype=int)]
+for size in range(K-1):
+    interpolation.append(np.zeros((partition_sizes[size], partition_sizes[size + 1]), dtype=int))
+
+for i in range(K):
+    for j in range(partition_sizes[i]):
+        for node in partitions[i][j]:
+            interpolation[i][node][j] = 1
 
 graphfile = open(graphpath)
 edges = [(int(line.split(" ")[0]), int(line.split(" ")[1])) for line in graphfile.readlines()]
@@ -77,16 +88,7 @@ edges = [(int(line.split(" ")[0]), int(line.split(" ")[1])) for line in graphfil
 
 def initialColors(N):
     return random.rand(N,3)
-    #colors_list = [[0,128,128],[128,0,0], [154,99,36], [75,75,0], [0,0,117], [0,0,0], [230,25,75], [245,130,49], [255,225,25], [188,246,12], [60,180,75], [70,240,240], [67,99,216], [145,30,180], [240,50,230], [128,128,128], [250,190,190], [255,216,177], [255,250,200], [170,255,195], [230,190,255], [255,255,255]]
-    #colors_list = [[0,128,128],[128,0,0], [154,99,36], [75,75,0], [0,0,117], [0,0,0], [230,25,75], [245,130,49], [255,225,25], [188,246,12], [60,180,75], [70,240,240], [67,99,216], [145,30,180], [240,50,230], [128,128,128], [250,190,190], [255,216,177], [255,250,200], [170,255,195], [230,190,255]]
-    #colors_list = [[128, 128, 128]]
-    for i in range(len(colors_list)):
-        colors_list[i] = [colors_list[i][0] / 256.0, colors_list[i][1] / 256.0, colors_list[i][2] / 256.0]
-    colors = []
-    print("requesting", N, "have", len(colors_list))
-    for i in range(N):
-        colors.append(colors_list[i % len(colors_list)])
-    return colors
+
 
 def normalize(x):
     if x<0.0:
@@ -95,39 +97,63 @@ def normalize(x):
         return 1.0
     return x
 
-diff = 0.01
-fullColors = []
-all_colors = [[]] * K
-colors = initialColors(partition_sizes[K-1])
+level = len(partitions)
+n_aggs = partition_sizes[level-1]
+part = interpolation[0]
+for i in range(level - 1):
+    part = part.dot(interpolation[i+1])
+
+colors = initialColors(n_aggs)
+
+texts = []
+vertices = []
+for i in range(n_aggs):
+    text = ""
+    aggs = []
+    for j in range(n):
+        if part[j][i] == 1:
+            text = text + "<br>" + ingredients[j]
+            aggs.append(j)
+    texts.append(text)
+    vertices.append(aggs)
+
+#fullColors = []
+#for i in range(partition_sizes[level - 1]):
+#    for j in range(n):
+#        if part[j][i] == 1:
+#            fullColors.append(colors[i])
+
+#diff = 0.01
 #print(colors)
 #print(partitions[0])
-for notlevel in range(K):
-    level = K - notlevel - 1
-    partition = partitions[level]
-    size = partition_sizes[level-1] if level > 0 else n
-    newColors = [(0.0, 0.0, 0.0)]*size;
-    for A in range(partition_sizes[level]):
-        old_color = colors[A]
-        for i in partition[A]:
-            newColors[i] = (normalize(old_color[0] + diff * (1.0 - 2.0 * random.random())),
-                            normalize(old_color[1] + diff * (1.0 - 2.0 * random.random())),
-                            normalize(old_color[2] + diff * (1.0 - 2.0 * random.random())))
-    all_colors[level] = colors
-    colors = newColors
-fullColors = colors
+#for notlevel in range(K):
+#    level = K - notlevel - 1
+#    partition = partitions[level]
+#    size = partition_sizes[level-1] if level > 0 else n
+#    newColors = [(0.0, 0.0, 0.0)]*size;
+#    for A in range(partition_sizes[level]):
+#        old_color = colors[A]
+#        for i in partition[A]:
+#            newColors[i] = (normalize(old_color[0] + diff * (1.0 - 2.0 * random.random())),
+#                            normalize(old_color[1] + diff * (1.0 - 2.0 * random.random())),
+#                            normalize(old_color[2] + diff * (1.0 - 2.0 * random.random())))
+#    all_colors[level] = colors
+#    colors = newColors
+#fullColors = colors
 
 
 #======
 
 axis=dict(showbackground=False, showline=False, zeroline=False, showgrid=False, showticklabels=False, title='')
 
-layout = go.Layout(title='',
+layout = go.Layout(
+       title='',
        width=1600, height=1200,
        showlegend=False,
        scene=dict(xaxis=dict(axis), yaxis=dict(axis), zaxis=dict(axis)),
        margin=dict(t=100),
        #hovermode='closest',
-       annotations=list([dict(showarrow=False, text="", xref='paper', yref='paper', x=0, y=0.1, xanchor='left', yanchor='bottom', font=dict(size=14))]))
+       )
 
 #======
 
@@ -154,8 +180,8 @@ def sphere(x, y, z, r, resolution=50):
     
 plot_datas = []
 
-# add nodes
 actual_colors = []
+# add nodes
 for color in colors:
     actual_colors.append('rgb(' + str(int(256 * color[0])) + ',' + str(int(256 * color[1])) + ',' + str(int(256 * color[2])) + ')')
 
@@ -175,25 +201,29 @@ elif (zoomlevel == 2):
 start = 0
 DO_VERTICES = True
 if DO_VERTICES:
-    plot_datas.append(go.Scatter3d(x=[coords[i][0] for i in range(start, n)],  
-                                   y=[coords[i][1] for i in range(start, n)],  
-                                   z=[coords[i][2] for i in range(start, n)], 
-                                   visible=True,
-                                   mode='markers', 
-                                   marker=dict(#symbol='circle',
-                                               size=ballsize,
-                                               opacity=1.0, 
-                                               color=[actual_colors[i] for i in range(start, n)],
-                                               line = dict(
-                                                   color = 'rgb(0, 0, 0)',
-                                                   width = 1
-                                               ),
-                                   ),
-                                   #group=[i for i in range(n)],
-                                   #opacity = [0.1 for i in range(n)],
-                                   text=ingredients,
-                                   hoverinfo="text"))
-    
+    for i in range(n_aggs):
+        plot_datas.append(
+                go.Scatter3d(
+                    x=[coords[j][0] for j in vertices[i]],  
+                    y=[coords[j][1] for j in vertices[i]],  
+                    z=[coords[j][2] for j in vertices[i]], 
+                    visible=True,
+                    mode='markers', 
+                    marker=dict(
+                        #symbol='circle',
+                        size=ballsize,
+                        opacity=1.0, 
+                        color=actual_colors[i],
+                        line = dict(
+                            color = 'rgb(0, 0, 0)',
+                            width = 1
+                            ),
+                        ),
+                    #group=[i for i in range(n)],
+                    #opacity = [0.1 for i in range(n)],
+                    text=texts[i],
+                    hoverinfo="text"))
+
     
 # add edges
 DO_EDGES = False
