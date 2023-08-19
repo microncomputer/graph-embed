@@ -1,0 +1,3 @@
+[submodule "deps/linalgcpp"]
+	path = deps/linalgcpp
+	url = https://github.com/gelever/linalgcpp
