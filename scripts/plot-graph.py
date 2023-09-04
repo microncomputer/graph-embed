@@ -14,6 +14,7 @@
 
 from numpy import *
 import numpy as np
+import math
 
 #======
 
@@ -36,7 +37,7 @@ parser.add_argument("-part", "--part", dest="partpath", help="input part FILE", 
 #parser.add_argument("-ball", "--ball", dest="ballpath", help="input ball FILE", metavar="FILE")
 parser.add_argument("-coords", "--coordinates", dest="coordspath", help="input coords FILE", metavar="FILE")
 parser.add_argument("-o", "--output", dest="outputpath", help="output FILE", metavar="FILE")
-parser.add_argument("-ingredients", dest="ingpath", help="ingredients FILE", metavar="FILE")
+# parser.add_argument("-ingredients", dest="ingpath", help="ingredients FILE", metavar="FILE")
 
 args = parser.parse_args()
 
@@ -45,17 +46,18 @@ partpath = args.partpath
 #ballpath = args.ballpath
 coordspath = args.coordspath
 outputpath = args.outputpath
-ingpath = args.ingpath
+# ingpath = args.ingpath
 
-ingfile = open(ingpath)
-ingredients = [ing for ing in ingfile.readlines()]
+
+# ingfile = open(ingpath)
+# ingredients = [ing for ing in ingfile.readlines()]
 
 #ballfile = open(ballpath)
 #balls = [[float(i) for i in line.split(" ")] for line in ballfile.readlines()]
 #balls = [(stuff[0], stuff[1], stuff[2], stuff[3], stuff[4], stuff[5] if len(stuff) >= 3+3 else 0.0) for stuff in balls]
 
 coordsfile = open(coordspath)
-coords = [[float(i) for i in line.split(" ")] for line in coordsfile.readlines()]
+coords = [[float(i) for i in line.split(" ") if i != "\n"] for line in coordsfile.readlines()]
 coords = [coord if len(coord) > 2 else [coord[0], coord[1], 0.0] for coord in coords]
 #print(coords)
 
@@ -105,6 +107,7 @@ for i in range(level - 1):
 
 colors = initialColors(n_aggs)
 
+
 texts = []
 vertices = []
 for i in range(n_aggs):
@@ -112,7 +115,7 @@ for i in range(n_aggs):
     aggs = []
     for j in range(n):
         if part[j][i] == 1:
-            text = text + "<br>" + ingredients[j]
+            text = text + "<br>" + "test" # ingredients[j]
             aggs.append(j)
     texts.append(text)
     vertices.append(aggs)
@@ -226,7 +229,7 @@ if DO_VERTICES:
 
     
 # add edges
-DO_EDGES = False
+DO_EDGES = True
 if DO_EDGES:
     Xe = []
     Ye = []
@@ -242,7 +245,7 @@ if DO_EDGES:
         Ze += [coords[i][2] - eps, coords[j][2] - eps, None]
     linecolor = 'rgb(75,75,75)'
     #linewidth = 4.5 #2*math.sqrt(math.sqrt(1000/E))
-    lineopacity = 0.01 #1.0 #math.sqrt(200/E)
+    lineopacity = 1 #1.0 #math.sqrt(200/E)
     plot_datas.append(go.Scatter3d(x=Xe, 
                                    y=Ye, 
                                    z=Ze,

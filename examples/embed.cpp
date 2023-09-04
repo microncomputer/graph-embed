@@ -73,7 +73,7 @@ int main (int argc, char* argv[]) {
     std::cerr << "-o must be present with one argument" << std::endl;
     return 1;
   } else if (format == "") {
-    std::cerr << "--inputformat must be present with one argument" << std::endl;
+    std::cerr << "-format must be present with one argument" << std::endl;
     return 1;
   }
 
@@ -89,7 +89,7 @@ int main (int argc, char* argv[]) {
   } else if (format == mtx) {
     A = linalgcpp::ReadMTX(inputpath);
   }
-
+  std::cout << "hello" << std::endl;
   double coarseningFactor = 0.1;
   std::vector<SparseMatrix> hierarchy = partition::partition(A, coarseningFactor);
   std::vector<SparseMatrix> As = {A};

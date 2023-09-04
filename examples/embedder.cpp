@@ -143,9 +143,15 @@ int main (int argc, char* argv[]) {
     std::cout << "doing: " << inputpath << std::endl;
 
     SparseMatrix A;
-
+	A = linalgcpp::ReadCooList(inputpath, true);
+	//linalgcpp::WriteMTX(A, "net.mtx");
+	//linalgcpp::WriteCooList(A, "net2.coo", true); 
+	//linalgcpp::WriteCooList(A, "~/src/github.com/microncomputer/graph-embed/outputs/net.coo", true); 
+	
+    /*
     {
-      A = linalgcpp::ReadCooList(inputpath, true);
+      //A = linalgcpp::ReadCooList(inputpath, true);
+      A = linalgcpp::ReadMTX(inputpath);
       bool connected = false;
       if (connected) {
 	std::cout << "before: " << A.Rows() << std::endl;
@@ -173,6 +179,7 @@ int main (int argc, char* argv[]) {
 	A.ScaleCols(vertex_weights);
       }
     }
+    */
 
     std::cout << A.Rows() << " " << A.Cols() << " " << A.GetData().size() << std::endl;
     int n = A.Rows();
@@ -180,12 +187,16 @@ int main (int argc, char* argv[]) {
     std::cout << "input read" << std::endl;
 
     double coarseningFactor = 1.0 / 10.0; 
+    //std::vector<SparseMatrix> hierarchy = partition::partition(A, coarseningFactor);
     std::vector<SparseMatrix> hierarchy = partition::partition(A, coarseningFactor, false, true, 1.0, 1, false);
 
+    /* this is pointless so excluding
     int killNum = 0;
     for (int i=0; i<killNum; i++) {
+	    std::cout << i << std::endl;
       hierarchy.pop_back();
     }
+    */
 
     std::cout << "partitioned!" << std::endl;
 
@@ -197,6 +208,7 @@ int main (int argc, char* argv[]) {
     n = A.Rows();
 
     int k = hierarchy.size();
+    std::cout << "k = hierarchy size = " << k << std::endl;
     std::cout << A.Rows() << " ";
     for (int i=0; i<hierarchy.size(); i++) {
       std::cout << hierarchy[i].Rows() << " ";
@@ -204,6 +216,7 @@ int main (int argc, char* argv[]) {
     std::cout << std::endl;
 
     k = hierarchy.size();
+    std::cout << "k = hierarchy size = " << k << std::endl;
 
     int dimension = 3;
     std::vector<SparseMatrix> As = {A};
@@ -223,12 +236,23 @@ int main (int argc, char* argv[]) {
       }
     }
 
-    std::string partpath = "temp/part.temp";
-    std::string coordspath = "temp/coords.temp";
-    std::string plotpath = "temp/plot.html";
-    std::string matpath = "temp/mat.temp";
+    std::string pathbegin = "~/src/github.com/microncomputer/graph-embed/build/examples/"; //for the python call at bottom
+    std::string partpath = "part.temp";
+    std::string coordspath = "coords.temp";
+    std::string plotpath = "plot.html";
+    std::string matpath = "mat.temp";
+
+    /*
+    std::string pathbegin = "~/src/github.com/microncomputer/graph-embed/outputs/";
+    std::string partpath = pathbegin + "part.temp";
+    std::string coordspath = pathbegin + "coords.temp";
+    std::string plotpath = pathbegin + "plot.html";
+    std::string matpath = pathbegin + "mat.temp";
+    //std::string matpath = "~/src/github.com/microncomputer/graph-embed/build/examples/data/net.mtx";
+*/
 
     // write partition
+    //partition::writePartition(hierarchy, partpath);
     std::ofstream partfile;
     partfile.open(partpath);
     if (k == 0) {
@@ -259,17 +283,7 @@ int main (int argc, char* argv[]) {
     partfile.close();
 
     // write coords
-    std::ofstream coordsfile;
-    coordsfile.open(coordspath);
-    for (int i=0; i<n; i++) {
-       if (dimension == 2) {
-          coordsfile << coords[i][0] << " " << coords[i][1] << " " << 0.0 << "\n";
-       }
-       if (dimension == 3) {
-          coordsfile << coords[i][0] << " " << coords[i][1] << " " << coords[i][2] << "\n";
-       }
-    }
-    coordsfile.close();
+    partition::writeCoords(coords, coordspath);    
 
     // write matrix:
     std::ofstream matfile;
@@ -284,19 +298,10 @@ int main (int argc, char* argv[]) {
     }
     matfile.close();
   
-    /*
-    std::string call = "/home/austen/Documents/school/research/pyvenv/bin/python /home/austen/Documents/school/research/graph-embed/scripts/plot-graph.py -graph " + matpath + " -part " + partpath + " -coords " + coordspath + " -o " + plotpath;
+    
+    std::string call = "python3 ~/src/github.com/microncomputer/graph-embed/scripts/plot-graph.py -graph " + pathbegin + matpath + " -part " +pathbegin +  partpath + " -coords " +pathbegin +  coordspath + " -o " +pathbegin +  plotpath;
     std::cout << call << std::endl;
     system(call.c_str());
-    */
+    
 }
-
-
-
-
-
-
-
-
-
 
