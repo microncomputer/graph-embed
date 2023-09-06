@@ -107,9 +107,9 @@ namespace partition {
 
   std::vector<std::vector<double>> embedViaMultilevel (const std::vector<SparseMatrix>& As,
 						       const std::vector<SparseMatrix>& P_Ts,
-						       const int d,
+						       const int d, //dimension to embed into
 						       const int levelIndex,
-						       std::vector<double>& r_A,
+						       std::vector<double>& r_A, //radius of the current aggregate(node)?
 						       std::vector<std::vector<double>>& coords_A,
 					    std::function<void (const SparseMatrix&,
 								const SparseMatrix&,
@@ -134,7 +134,7 @@ namespace partition {
       std::vector<int> v_A (n, 0);
       std::vector<std::vector<double>> origin = {std::vector<double>(d, 0.0)};
       std::vector<double> r_A = {1.0};
-      embedder(As[levelIndex], P_T, v_A, origin, r_A, coords, d);
+      embedder(As[levelIndex], P_T, v_A, origin, r_A, coords, d);SparseMatrix
       return coords;
     } else {
 

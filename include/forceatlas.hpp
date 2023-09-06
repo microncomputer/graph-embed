@@ -87,7 +87,7 @@ namespace partition {
   }
   
   void forceAtlas (const SparseMatrix& A,
-		   const int dim,
+		   const int dim, //dimension to embed into
 		   std::vector<std::vector<double>>& coords,
 		   const int iterations=100000,
 		   const double ks=0.1,
@@ -315,7 +315,7 @@ namespace partition {
 			     const SparseMatrix& P,
 			     const std::vector<int>& v_A,
 			     const std::vector<std::vector<double>>& coords_A,
-			     const std::vector<double>& r_A,
+			     const std::vector<double>& r_A, //the radius of the current aggregate A?
 			     std::vector<std::vector<double>>& coords,
 			     int dim=2,
 			     int iterations=10,
