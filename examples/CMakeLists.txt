@@ -18,3 +18,7 @@ target_link_libraries(embed partitioner)
 
 add_executable(embedder embedder.cpp)
 target_link_libraries(embedder partitioner)
+
+add_executable(micronembedder micron_embed_new_functional.cpp)
+target_link_libraries(micronembedder partitioner)
+

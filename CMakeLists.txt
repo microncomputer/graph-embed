@@ -34,10 +34,11 @@ add_library(partitioner
 	    src/matrixutils.cpp
 	    src/embed.cpp
 	    src/export.cpp
+        src/micron_embed.cpp
 )
 
 set_target_properties(partitioner PROPERTIES
-		      CXX_STANDARD 11
+		      CXX_STANDARD 20
 		      CXX_STANDARD_REQUIRED YES
 		      CXX_EXTENSIONS NO
 )

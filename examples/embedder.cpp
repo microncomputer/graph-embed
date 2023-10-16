@@ -200,33 +200,43 @@ int main (int argc, char* argv[]) {
 
     std::cout << "partitioned!" << std::endl;
 
+    /*
+    //this for loop gets skipped. maybe it was used to confirm that the partition worked properly
+    //by reconstructing A?
     int startLevel = 0;
     for (int i=0; i<startLevel; i++) {
       A = hierarchy[0].Mult(A).Mult(hierarchy[0].Transpose());
       hierarchy.erase(hierarchy.begin());
-    }
+    }*/
+
+
     n = A.Rows();
+    int dimension = 3;
 
     int k = hierarchy.size();
-    std::cout << "k = hierarchy size = " << k << std::endl;
     std::cout << A.Rows() << " ";
     for (int i=0; i<hierarchy.size(); i++) {
       std::cout << hierarchy[i].Rows() << " ";
     }
     std::cout << std::endl;
 
-    k = hierarchy.size();
-    std::cout << "k = hierarchy size = " << k << std::endl;
 
-    int dimension = 3;
-    std::vector<SparseMatrix> As = {A};
+    //set As to a vector of sparse matrices and have a copy of A as the first element
+    std::vector<SparseMatrix> As = {A}; 
+
+//Add subsequent compositions of aggregate_vertex matrices with A and their transpose: see note below for more info.
     for (int level=0; level<k; level++) {
       As.push_back(hierarchy[level].Mult(As[level]).Mult(hierarchy[level].Transpose()));
     }
+    // Q(question): This gives the A_coarse matrix for the next level. I thought it was supposed to be P_Trans * A * P but here it is the opposite.. that would build agg_agg matrices..
+    // A(answer): in src/embed.cpp line 566 it calls the second input of embed "P_Ts". this is the hierarchy of partitions. so apparently they are transposed. in this case, the questionable order of the composition(product) here makes sense.
+
+
+
 
     std::cout << "starting embedding: " << std::endl;
     linalgcpp::Timer timer (linalgcpp::Timer::Start::True);
-    std::vector<std::vector<double>> coords = partition::embed(As, hierarchy, dimension);
+    std::vector<std::vector<double>> coords = partition::embed(As, hierarchy, dimension); //embed code in src/embed.cpp ~line 565
     timer.Click();
     std::cout << "embedded! in time " << timer[0] << "s" << std::endl;
 

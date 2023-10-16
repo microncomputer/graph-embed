@@ -13,6 +13,7 @@
 #define EMBED_HPP
 
 #include "partitioner.hpp"
+#include "matrixutils.hpp"
 
 namespace partition {
 

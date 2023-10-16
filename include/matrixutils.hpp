@@ -20,24 +20,35 @@ using coordinates = std::vector<coord>;
 
 namespace partition {
 
-  /* 
-     @param n the desired dimension
-     Returns the n*n identity matrix
-  */
-  SparseMatrix identity (int n);  
-  
-  /* 
-     @param A the adjacency matrix  
-     Given an adjacency matrix A, returns the corresponding graph Laplacian matrix L
-  */
-  SparseMatrix toLaplacian (const SparseMatrix& A);
-  
-  /* 
-     @param L the graph Laplacian matrix
-     Given a graph Laplacian matrix L, returns the corresponding adjacency matrix A
-  */
-  SparseMatrix fromLaplacian (const SparseMatrix& L); 
+    /* 
+       @param n the desired dimension
+       Returns the n*n identity matrix
+       */
+    SparseMatrix identity (int n);  
 
+    /* 
+       @param A the adjacency matrix  
+       Given an adjacency matrix A, returns the corresponding graph Laplacian matrix L
+       */
+    SparseMatrix toLaplacian (const SparseMatrix& A);
+
+    /* 
+       @param L the graph Laplacian matrix
+       Given a graph Laplacian matrix L, returns the corresponding adjacency matrix A
+       */
+    SparseMatrix fromLaplacian (const SparseMatrix& L); 
+    double abs (double val);
+
+    double distance (const std::vector<double>& v1, const std::vector<double>& v2);
+      
+    double magnitude (const std::vector<double>& v);
+    void normalize(std::vector<double> & v);
+     
+    std::vector<double> addVectors(const std::vector<double>& vec1, const std::vector<double>& vec2);
+    std::vector<double> multScalarVector(double scalar, const std::vector<double>& vec);
+    
+
+    double innerproduct_euclidean(const std::vector<double>& vec1, const std::vector<double>& vec2);
 }
 
 #endif // MATRIXUTILS_HPP
